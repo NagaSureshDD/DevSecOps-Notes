@@ -1,0 +1,53 @@
+DAY-1 of DevSecOps Series by Sai kiran P.
+
+1.Generate a .ppk file with a passphrase from a .pem file using puttygen feature of SSH tool Putty. 
+
+2.Tmux Command line Utility to break the screen into multiple tabs to work. Tried on AWS EC2 Connect, Need to check with other SSH tools as well. 
+Tmux --> Ctrl+B Shift+5(for 1 Screen & " in place of 5 for 2 Screens) --> exit 
+
+3.Loops in Shell/Terminal 
+for I in {..range..}; 
+>do 
+>echo $(date) 
+>sleep 1 
+>done  
+ 
+above loop prints date function for every 1 second for 10 seconds. Data returned by terminal will be like 
+Mon Sep 23 15:31:32 UTC 2024 
+the gaps between them is called De-Limiters.  
+
+4.By using cut and awk commands we will eliminate unnecessary data that we get and can print only required data. 
+Eg: from above example for loop, we are getting so much data, So by using awk we can eliminate gaps and print required Field. 
+for i in {1..10}; do echo $(date) | awk -F " " '{print $1,$2,$3,$4}'; sleep 1; done 
+awk –F(Fields)," " - to remove spaces(de-limiters) .  
+ 
+We can also use awk to rephrase data according to fields.  
+aws s3 ls | awk –F " " '${print $2,$4,$3,$1}' in this way we can print data as required for your convience. 
+
+5.Variable Declaration 
+Declare variables(Should not be Reserved Key-Words) using below formats 
+eg: x='Engineer' , y='Suresh-DevSecOps-$x' echo $y – prints Suresh-DevSecOps-$x only as we using single quotes and in order to refer and print data stored in var x we need to use double-qotes(" " ) 
+y="Suresh-DevSecOps-$y" --prints Suresh-DevSecOps-Engineer 
+
+6."Cut" Command 
+aws s3 ls | cut –d " " -f 2,3 > logs.txt 
+-d " " - to eliminate spaces and –f to print required fields to designated folder file. 
+Cut is limited function as it print data as it is but can't rephrase according to requirement. 
+
+7.Grep – Granular Regular Expression is used in order to get granular data that can be fetched from a pile of data.  
+aws s3 ls | cut –d ' ' -f 3 | grep –iE www[.] --- E means Enchanced Grep Search 
+Above exp using grep is fetching s3 buckets data of field 3 and in granular fetching S3 Buckets with name starting 'www.'  
+
+8.Shell Script  
+#! - Shebang / Octa-trap 
+#!/bin/bash 
+ 
+set -x 
+aws s3 ls | cut –d ' ' -f 3 | grep –E www[.]  
+echo 'Welcome to DevSecOps Series' 
+ 
+In order to run above bash file, either we can run it using bash filename or by giving req permissions 700 (R4 W2 E1) filename 
+
+Debugging 
+In order to debug script execution flow for troubleshooting errors, we need to use 'set –x' function.  
+echo $(date) | cut –d ' ' -f 1,2,3 
