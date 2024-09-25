@@ -1,0 +1,144 @@
+DAY – 2: 
+
+Learning Concepts by relating to a task where we will use that concept brings a good understanding of both implementation and understanding of concept. 
+
+ 
+
+following the same, 
+
+1. Create an IAM Role with EC2&S3 Full Access and From Actions Tab in EC2 Console, Navigate to Security and then Modify IAM Role to allow EC2 to access S3 Resources. 
+
+Note: Need to install aws-cli before using.  
+
+2. Characteristics of JSON files. Data in JSON format will be btw { curly-braces} and in the form of Key-Value Pairs. Data related to a property will be btw Character Sets and It contains a List of Values 
+
+Eg:  { 
+
+"Vpcs": [ - Character-Sets  
+
+   { 
+
+     "CidrBlock": "172.31.0.0/16", - Data in Key-Format Form 
+
+     "DhcpOptionsId": "dopt-04a7b89d9d5b0daff", - List of Values 
+
+} 
+
+] 
+
+} - Curly Braces 
+
+3.  Ctrl+L – Gives new Screen in EC2 Connect. 
+
+4. trim CLI-Utility 
+
+In order to terminate additional info and print only required info eg: only VpcId 's from cli-cmd, we need to use cli – utilities like trim – tr 
+
+aws ec2 describe-vpcs –region ap-south-1 | jq ".Vpcs[].VpcId" -r or | tr –d '"' (delete "-double quotes) 
+
+| tr - '[:lower:]' '[:upper:]' - format of trim command to change case of data to upper case if it's lower case. 
+
+5. Writing Scripts: Bash/Python Automation Scripts are mainly developed in order to automate a task that need to be done repeatedly and manual tasks which are tend to be mistaken. This is the main use-case of writing Scripts.  
+
+As no one remembers the whole command that we discussed in above point, it is suggested to convert it into a shell script. 
+
+Nano script.sh --> Write Script --> Ctrl+X & Y & Enter and use cat to view the content of the file. 
+
+ 
+
+Copy paste same cmd along with #!/bin/bash and run using either "bash" or give req(mostly chmod 700) permission.  
+
+6. Variable Declaration: In order to get details of different Region VPCs, instead of changing –region parameter in script, we can variable it by declaring in below format 
+
+ 
+
+#!/bin/bash 
+
+REGION='us-east-1' - variable declaration 
+
+aws ec2 describe-vpcs –region ${REGION} | jq ".Vpcs[].VpcId" -r  
+
+7. Use case of $1: 
+
+Instead of updating region variable manually, we can provide the variable value from terminal while running the script only. In order to do so, we need to understand the Use of $1 – Special Character. 
+
+Replace REGION variable value with $1 
+
+REGION=$1 and while running script share the region  
+
+bash script.sh us-east-1   
+
+ 
+
+So in the same way, if you need to provide multiple values from terminal before running a Script to keep it flexible.  
+
+8. Error and Exit Codes: 
+
+How system will know if any variable/keyword that you entered is something that is have in it's memory. By understanding exit and error codes of system, we will be able to understand most of these issues. 
+
+Eg: enter anything(apart from reserved keywords) and run echo @? After that and you see some number apart 0 and run any know cmd like ll,ls, cd..etc and run the same cmd and you will see 0 as value returned by system. So apart from 0, everything is an error/exit code. 
+
+ 
+
+9.Developing Script with $?: 
+
+As a pre-requisite have Shell-Format Extension from foxundermoon installed for auto-suggestions, correction. Also Enable Formatting Option  
+
+Open User Settings --> Text Editor --> Formatting --> Format on Save -->Enable 
+
+ 
+
+Short-Cuts: Ctrl + K to remove text from script while using nano/vi.  
+
+ 
+
+Special file: /dev/null - anything written to this file will not be saved. It's useful when it comes to output redirection to minimize error messages.  
+
+ 
+
+When running a script it's required to suppress unnecessary system errors as it creates a burden to understand the mistake/issue with script. So in such cases, we can redirect them to /dev/null location, as it doesn't save anything.  
+
+ 
+
+awd –version 2> /dev/null 
+
+ 
+
+10. Use case of $0,$@ and $*, $#: 
+
+$0 actually refers to field – 0 while passing an argument/cmd.  
+
+eg: bash script.sh - field after bash is the immediate arg and with $0 we refer the same. 
+
+$1 refers to field after $0  I.e bash script.sh us-east-1 
+
+$2,$3, $4 etc...refers to arg fields just like mentioned above. 
+
+ 
+
+Instead of using $2,3,4 etc...we can use $@ in order to pass values for a variable.  
+
+ 
+
+*Difference btw $@ & $* is that how they consider or process the arguments provided. 
+
+$@ - takes arguments as individuals values  
+
+eg: bash script.sh us-east-1 us-east-2 us-west-1 ( all args after script.sh are considered as different values) 
+
+$* - takes arguments as single string( should be btw double-strings) 
+
+ 
+
+$# - is used in order to continue the execution only when arguments are passed.  
+
+ 
+
+All the above special parameters help us to build complex scripts, when 
+
+1. we need to continue the flow of execution of script only when a certain condition is met, $# - arguments > 0  
+
+2. Argument passed is valid, $? = 0 
+
+3. Flexibility to pass 'n' no.of arguments, $@ 
+
